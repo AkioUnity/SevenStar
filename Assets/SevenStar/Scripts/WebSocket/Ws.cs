@@ -71,7 +71,7 @@ public class Ws : MonoBehaviour
         TexasHoldemClient c = TexasHoldemClient.Instance;
         res = "<xml>" + res + "</xml>";
         string protocol = TinyXmlReader.GetProtocol(res);
-        c.AddRecvData((int)Protocol.GetValue(protocol),Encoding.UTF8.GetBytes (res));
+//        c.AddRecvData((int)Protocol.GetValue(protocol),Encoding.UTF8.GetBytes (res));
         if (queueCn>0)
             ws.SendString(sendQueue.Dequeue());
 //        reply = res;

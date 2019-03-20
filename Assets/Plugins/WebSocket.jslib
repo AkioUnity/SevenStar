@@ -29,6 +29,15 @@ SocketCreate: function(url)
 			var array = new Uint8Array(e.data);
 			socket.messages.push(array);
 		}
+		else if(typeof e.data === "string") {
+			var reader = new FileReader();
+			reader.addEventListener("loadend", function() {
+				var array = new Uint8Array(reader.result);
+				socket.messages.push(array);
+			});
+			var blob = new Blob([e.data]);
+			reader.readAsArrayBuffer(blob);
+		}
 		else{
         	socket.messages.push(e.data);
         }
@@ -101,20 +110,20 @@ SocketRecvLength: function(socketInstance)
 	return socket.messages[0].length;
 },
 
-SocketRecv: function (socketInstance, length)
+SocketRecv: function (socketInstance, ptr, length)
 {
 	var socket = webSocketInstances[socketInstance];
 	if (socket.messages.length == 0)
 		return 0;
 	if (socket.messages[0].length > length)
 		return 0;
-	//HEAPU8.set(socket.messages[0], ptr);
-	var returnStr = socket.messages[0];    
-    var bufferSize = lengthBytesUTF8(returnStr) + 1;    	
-    var buffer = _malloc(bufferSize);
-    stringToUTF8(returnStr, buffer, bufferSize);
+	HEAPU8.set(socket.messages[0], ptr);
+	//var returnStr = socket.messages[0];    
+    //var bufferSize = lengthBytesUTF8(returnStr) + 1;    	
+    //var buffer = _malloc(bufferSize);
+    //stringToUTF8(returnStr, buffer, bufferSize);
     socket.messages = socket.messages.slice(1);        	
-    return buffer;
+    //return buffer;
 },
 
 SocketClose: function (socketInstance)

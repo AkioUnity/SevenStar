@@ -18,7 +18,8 @@ public class Ws : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        ws=new WebSocket(new Uri("ws://211.238.13.182:18080"));
+//        ws=new WebSocket(new Uri("ws://211.238.13.182:18080"));
+        ws=new WebSocket(new Uri("ws://localhost:13300"));
         sendQueue=new Queue<string>();
         queueCn = 0;
     }
@@ -27,9 +28,12 @@ public class Ws : MonoBehaviour
     {
         yield return StartCoroutine(ws.Connect());
         Debug.Log("connected");
+        string[] strArr = new string[2] { "t1", "a" };
+        byte[] data = ClientBase.StringArrayToByte(strArr);
+        Send(Protocols.Login, data);
         while (true)
         {
-            string reply0 = ws.RecvString();
+            byte[] reply0 = ws.Recv();
             if (reply0 != null)
             {
                 Receive(reply0);
@@ -45,11 +49,33 @@ public class Ws : MonoBehaviour
         ws.Close();
     }
 
-    public void Login(string id, string pass)
+    private int m_PacketNumber = 13;
+    public bool Send(Protocols protocol, byte[] data)
     {
-        Send("<protocol>login</protocol><id>"+id+"</id><pass>"+pass+"</pass>");
+        try
+        {
+            int p = (int)protocol;
+            int len = data.Length + 12;
+            int num = m_PacketNumber;
+            byte[] SendData = new byte[len];
+            m_PacketNumber++;
+
+            Array.Copy(BitConverter.GetBytes(len), 0, SendData, 0, 4);
+            Array.Copy(BitConverter.GetBytes(num), 0, SendData, 4, 4);
+            Array.Copy(BitConverter.GetBytes(p), 0, SendData, 8, 4);
+
+            Array.Copy(data, 0, SendData, 12, data.Length);
+
+            ws.Send(SendData);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.ToString());
+        }
+        return false;
     }
-    
+
     public void Send(string res)
     {
 //        reply = null;
@@ -64,14 +90,20 @@ public class Ws : MonoBehaviour
         }
         queueCn++;
     }
-    public void Receive(string res)
+    public void Receive(byte[] res)
     {
         queueCn--;
-        Debug.Log("Received:"+queueCn+":"+ res);
+        int len = BitConverter.ToInt32(res,0);
+        int length = len - 12;
+        int protocol = BitConverter.ToInt32(res, 8);
+        Debug.Log("Received:"+queueCn+"  len:"+len+" length:"+length+" proto:"+protocol);
+        
+        byte[] data = new byte[length];
+        Array.Copy(res, 12, data, 0, length);
+        int user_id = BitConverter.ToInt32(data, 0);
+        Debug.Log("user_id:"+user_id);
         TexasHoldemClient c = TexasHoldemClient.Instance;
-        res = "<xml>" + res + "</xml>";
-        string protocol = TinyXmlReader.GetProtocol(res);
-//        c.AddRecvData((int)Protocol.GetValue(protocol),Encoding.UTF8.GetBytes (res));
+        c.AddRecvData(protocol,data);
         if (queueCn>0)
             ws.SendString(sendQueue.Dequeue());
 //        reply = res;

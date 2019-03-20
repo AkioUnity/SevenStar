@@ -20,24 +20,10 @@ public class WebSocket
 		if (!protocol.Equals("ws") && !protocol.Equals("wss"))
 			throw new ArgumentException("Unsupported protocol: " + protocol);
 	}
-
+	
 	public void SendString(string str)
 	{
-		byte[] data = BitConverter.GetBytes(115);
-		int p = 1000;
-		int len = data.Length + 12;
-		int num = 24;
-		byte[] SendData = new byte[len];
-//		m_PacketNumber++;
-		Debug.Log("len:" + len);
-		Debug.Log("p:" + p);
-		Array.Copy(BitConverter.GetBytes(len), 0, SendData, 0, 4);
-		Array.Copy(BitConverter.GetBytes(num), 0, SendData, 4, 4);
-		Array.Copy(BitConverter.GetBytes(p), 0, SendData, 8, 4);
-
-		Array.Copy(data, 0, SendData, 12, data.Length);
-		Send(SendData);
-//		Send(Encoding.UTF8.GetBytes (str));
+		Send(Encoding.UTF8.GetBytes (str));
 	}
 
 	public string RecvString()
@@ -59,7 +45,7 @@ public class WebSocket
 	private static extern void SocketSend (int socketInstance, byte[] ptr, int length);
 
 	[DllImport("__Internal")]
-	private static extern string SocketRecv (int socketInstance, int length);
+	private static extern void SocketRecv (int socketInstance, byte[] ptr, int length);
 
 	[DllImport("__Internal")]
 	private static extern int SocketRecvLength (int socketInstance);
@@ -82,8 +68,9 @@ public class WebSocket
 		int length = SocketRecvLength (m_NativeRef);
 		if (length == 0)
 			return null;
-		string buffer=SocketRecv (m_NativeRef, length);
-		return Encoding.UTF8.GetBytes(buffer);
+		byte[] buffer = new byte[length];
+		SocketRecv (m_NativeRef, buffer, length);
+		return buffer;
 	}
 
 	public IEnumerator Connect()

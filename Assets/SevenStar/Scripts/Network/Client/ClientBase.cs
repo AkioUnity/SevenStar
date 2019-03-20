@@ -244,6 +244,14 @@ public class ClientBase
         }
     }
 
+	public void AddRecvData(int pro,byte[] data0)
+    {
+        RecvData d = new RecvData();
+        d.protocol = pro;
+        d.data = data0;
+        m_RecvData.Add(d);
+    }
+	
     void AddRecvData()
     {
         try

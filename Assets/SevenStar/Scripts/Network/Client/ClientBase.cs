@@ -87,18 +87,8 @@ public class ClientBase
     static public Action<string> LogFunc = null;
 
 
-    public bool IsConnect
-    {
-        get
-        {
-            if (m_Sock == null)
-                return false;
-            if (m_Sock.Connected == false)
-                return false;
-            return true;
-        }
-    }
-
+    public bool IsConnect = false;
+    
     void Receive()
     {
         try
@@ -151,39 +141,13 @@ public class ClientBase
 
     public void Disconnect()
     {
-        if (m_Sock == null)
-            return;
-        m_Sock.BeginDisconnect(false, new AsyncCallback(OnDisconnectCallback), m_Sock);
+        IsConnect = false;
+        Ws.ws.Close();
     }
         
     public bool Send(Protocols protocol, byte[] data)
     {
-        try
-        {
-            if (m_Sock == null)
-                return false;
-            if (m_Sock.Connected == false)
-                return false;
-            int p = (int)protocol;
-            int len = data.Length + 12;
-            int num = m_PacketNumber;
-            byte[] SendData = new byte[len];
-            m_PacketNumber++;
-
-            Array.Copy(BitConverter.GetBytes(len), 0, SendData, 0, 4);
-            Array.Copy(BitConverter.GetBytes(num), 0, SendData, 4, 4);
-            Array.Copy(BitConverter.GetBytes(p), 0, SendData, 8, 4);
-
-            Array.Copy(data, 0, SendData, 12, data.Length);
-
-            m_Sock.Send(SendData);
-            return true;
-        }
-        catch (Exception e)
-        {
-            Log(e.ToString());
-        }
-        return false;
+        return Ws.Instance.Send(protocol, data);
     }
 
     public bool Send_int(Protocols protocol, int v)

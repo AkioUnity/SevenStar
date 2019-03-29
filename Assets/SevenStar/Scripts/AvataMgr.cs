@@ -76,6 +76,7 @@ public class AvataMgr : UtilObjectSingleton<AvataMgr>
 
     public void LoadTitleScene()
     {
+        Debug.Log("load 1_Title Scene");
         SceneManager.LoadScene("1_Title");
     }
 

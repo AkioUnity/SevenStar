@@ -20,43 +20,23 @@ public class SevenStarTitle : UtilHalfSingleton<SevenStarTitle>
 
     private IEnumerator Start()
     {
-        //noti
-        GetSevenStarNoti();
-
+    
         // Set sleep time out
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         // Connectiion work
-        if(ClientObject.Instance.m_Client.IsConnect == false)
+            yield return new WaitForSeconds(0.3f);
+        if (!TexasHoldemClient.Instance.IsConnect)
         {
-            yield return new WaitForSeconds(0.5f);
             Debug.Log("Connect Work");
-            ClientObject.Instance.m_Client.Connect("211.238.13.182");
-            //ClientObject.Instance.m_Client.Connect("118.45.180.254");
-            //ClientObject.Instance.m_Client.Connect("127.0.0.1");
-            //ClientObject.Instance.m_Client.Connect("192.168.0.6");
-        }
+            StartCoroutine(Ws.Instance.StartConnect());  
+        } 
+//            ClientObject.Instance.m_Client.Connect("211.238.13.182");
+        //ClientObject.Instance.m_Client.Connect("118.45.180.254");
+//            ClientObject.Instance.m_Client.Connect("127.0.0.1");
+        //ClientObject.Instance.m_Client.Connect("192.168.0.6");
     }
 
-    private void GetSevenStarNoti()
-    {
-        string response="";
-        Uri targetUri = new Uri("http://211.238.13.182/TexasHoldemNoti/Noti.html");
-        HttpWebRequest webRequest = HttpWebRequest.Create(targetUri) as HttpWebRequest;
-        HttpWebResponse webResponse = webRequest.GetResponse() as HttpWebResponse;
-        using (StreamReader sr = new StreamReader(webResponse.GetResponseStream()))
-        {
-            response = sr.ReadToEnd();
-            sr.Close();
-        }
-
-        if (response.Length <= 0)
-            return;
-
-        // pop up panel
-        AlertPanel.Instance.StartAlert(response);
-    }
-
-
+    
     private void Update()
     {
         /*if(Input.GetKeyDown(KeyCode.Q))

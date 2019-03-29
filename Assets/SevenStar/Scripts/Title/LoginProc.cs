@@ -49,7 +49,7 @@ public class LoginProc : MonoBehaviour
             AlertPanel.Instance.StartAlertOtherObj(m_AlertLogin, AlertType.LoginFail);
             yield break;
         }
-        Debug.Log("로그인 시도중");
+        
         if(m_LoadingPanel)
             m_LoadingPanel.SetActive(true);
         TexasHoldemClient c = TexasHoldemClient.Instance;

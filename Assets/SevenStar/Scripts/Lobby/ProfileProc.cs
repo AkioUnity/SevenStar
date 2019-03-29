@@ -111,13 +111,14 @@ public class ProfileProc : MonoBehaviour
         m_IsLogoutWorking = true;
         TexasHoldemClient.Instance.SendLogOut();
         LoginSession.Instance.Init();
-        //ClientObject.Instance.m_Client.Disconnect();
+        
+//        while (ClientObject.Instance.m_Client.IsConnect)
+//        {
+//            yield return null;
+//        }
+        TexasHoldemClient.Instance.IsConnect = false;
+        SceneManager.LoadScene("1_Title");
         yield return null;
-        /*while (ClientObject.Instance.m_Client.IsConnect)
-        {
-            yield return null;
-        }
-        SceneManager.LoadScene("1_Title");*/
     }
 
     public void OnClick_BackBtn()

@@ -11,7 +11,7 @@ public class Ws : MonoBehaviour
 
     public static WebSocket ws;
 
-    private Queue<string> sendQueue;
+    private Queue<byte[]> sendQueue;
 
     int queueCn;
     
@@ -20,17 +20,20 @@ public class Ws : MonoBehaviour
         Instance = this;
 //        ws=new WebSocket(new Uri("ws://211.238.13.182:18080"));
         ws=new WebSocket(new Uri("ws://localhost:13300"));
-        sendQueue=new Queue<string>();
+        sendQueue=new Queue<byte[]>();
         queueCn = 0;
     }
-    
-    private IEnumerator Start()
+
+    private void Start()
+    {
+        StartCoroutine(StartConnect());
+    }
+
+    public IEnumerator StartConnect()
     {
         yield return StartCoroutine(ws.Connect());
         Debug.Log("connected");
-        string[] strArr = new string[2] { "t1", "a" };
-        byte[] data = ClientBase.StringArrayToByte(strArr);
-        Send(Protocols.Login, data);
+        TexasHoldemClient.Instance.IsConnect = true;
         while (true)
         {
             byte[] reply0 = ws.Recv();
@@ -49,7 +52,7 @@ public class Ws : MonoBehaviour
         ws.Close();
     }
 
-    private int m_PacketNumber = 13;
+    private int m_PacketNumber = 1;
     public bool Send(Protocols protocol, byte[] data)
     {
         try
@@ -65,8 +68,17 @@ public class Ws : MonoBehaviour
             Array.Copy(BitConverter.GetBytes(p), 0, SendData, 8, 4);
 
             Array.Copy(data, 0, SendData, 12, data.Length);
-
+            Debug.Log("send cn:" + queueCn + "  protocal:" + protocol + " len" + len);
             ws.Send(SendData);
+//            if (queueCn == 0)
+//            {
+//                ws.Send(SendData);
+//            }
+//            else
+//            {
+//                sendQueue.Enqueue(SendData);
+//            }
+//            queueCn++;
             return true;
         }
         catch (Exception e)
@@ -75,37 +87,21 @@ public class Ws : MonoBehaviour
         }
         return false;
     }
-
-    public void Send(string res)
-    {
-//        reply = null;
-        Debug.Log("Send:"+queueCn+":"+res);
-        if (queueCn == 0)
-        {
-            ws.SendString(res);
-        }
-        else
-        {
-            sendQueue.Enqueue(res);
-        }
-        queueCn++;
-    }
+    
     public void Receive(byte[] res)
     {
-        queueCn--;
+//        queueCn--;
         int len = BitConverter.ToInt32(res,0);
         int length = len - 12;
         int protocol = BitConverter.ToInt32(res, 8);
-        Debug.Log("Received:"+queueCn+"  len:"+len+" length:"+length+" proto:"+protocol);
+        Debug.Log("Received:"+queueCn+"  len:"+len+" length:"+length+" proto:"+(Protocols)protocol);
         
         byte[] data = new byte[length];
         Array.Copy(res, 12, data, 0, length);
-        int user_id = BitConverter.ToInt32(data, 0);
-        Debug.Log("user_id:"+user_id);
         TexasHoldemClient c = TexasHoldemClient.Instance;
         c.AddRecvData(protocol,data);
         if (queueCn>0)
-            ws.SendString(sendQueue.Dequeue());
+            ws.Send(sendQueue.Dequeue());
 //        reply = res;
     }
 }

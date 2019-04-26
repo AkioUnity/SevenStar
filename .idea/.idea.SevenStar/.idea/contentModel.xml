@@ -10,6 +10,7 @@
       <e p="Assets" t="Include">
         <e p="Editor" t="Include">
           <e p="AnchorToolEditor.cs" t="Include" />
+          <e p="PostBuildActions.cs" t="Include" />
         </e>
         <e p="Example" t="Include">
           <e p="EchoTest.cs" t="Include" />
@@ -73,6 +74,9 @@
             <e p="CardObject.cs" t="Include" />
             <e p="CommunityCard.cs" t="Include" />
             <e p="GamePlayerInfo.cs" t="Include" />
+            <e p="KeyBoard" t="Include">
+              <e p="keyboardClass.cs" t="Include" />
+            </e>
             <e p="Lobby" t="Include">
               <e p="AvataHolderSize.cs" t="Include" />
               <e p="AvataItem.cs" t="Include" />
@@ -146,9 +150,7 @@
       <e p="obj" t="ExcludeRecursive" />
       <e p="packages" t="ExcludeRecursive" />
       <e p="SevenStar.sln" t="IncludeFlat" />
-      <e p="temp" t="ExcludeRecursive">
-        <e p="bin" t="ExcludeRecursive" />
-      </e>
+      <e p="temp\bin" t="ExcludeRecursive" />
     </e>
   </component>
 </project>

@@ -150,7 +150,9 @@
       <e p="obj" t="ExcludeRecursive" />
       <e p="packages" t="ExcludeRecursive" />
       <e p="SevenStar.sln" t="IncludeFlat" />
-      <e p="temp\bin" t="ExcludeRecursive" />
+      <e p="temp" t="ExcludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+      </e>
     </e>
   </component>
 </project>

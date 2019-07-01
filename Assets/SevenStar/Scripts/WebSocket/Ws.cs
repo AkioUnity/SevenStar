@@ -18,9 +18,8 @@ public class Ws : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-//        ws=new WebSocket(new Uri("ws://211.238.13.182:18080"));
-//        ws=new WebSocket(new Uri("ws://localhost:13300"));
-        ws=new WebSocket(new Uri("ws://66.181.167.116:13300"));
+//        ws=new WebSocket(new Uri("ws://124.158.124.3:13300"));  //new
+        ws=new WebSocket(new Uri("ws://localhost:13300"));
         sendQueue=new Queue<byte[]>();
         queueCn = 0;
     }

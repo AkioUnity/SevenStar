@@ -59,7 +59,7 @@ public class GamePlayerInfo : MonoBehaviour {
         m_UserSeat.m_ResultMark.gameObject.SetActive(false);
         if (m_PlayerIdx > -1)
         {
-            TexasHoldemClient.Instance.SendGetUserInfo(m_PlayerIdx);
+//            TexasHoldemClient.Instance.SendGetUserInfo(m_PlayerIdx);
             m_UserSeat.m_BettingTimer.gameObject.SetActive(true);
             m_UserSeat.m_BettingTimer.SetTimerPer(0);
             m_UserSeat.SetHandCardActive(true);

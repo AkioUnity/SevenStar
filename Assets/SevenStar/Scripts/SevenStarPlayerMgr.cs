@@ -62,20 +62,21 @@ public class SevenStarPlayerMgr : MonoBehaviour
         }
 
 
-        List<int> UserList = null;
-        ParserGame.GetPlayerList(obj, ref UserList);
+        List<int> UserList =  (List<int>)obj.obj;
         if (UserList == null)
         {
             m_Logic.Client.SendOutRoom();
             SceneManager.LoadSceneAsync("2_Lobby");
             yield break;
         }
-        for (i = 0; i < UserList.Count; i++)
-        {
-            if (UserList[i] == -1)
-                continue;
-            c.SendGetUserInfo(UserList[i]);
-        }
+        
+        if (First)
+            for (i = 0; i < UserList.Count; i++)
+            {
+                if (UserList[i] == -1)
+                    continue;
+                c.SendGetUserInfo(UserList[i]);
+            }
 
         if (First)  // 난입시 처음 세팅 - 바닥패, 사용자 베팅정보;;
         {

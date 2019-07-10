@@ -36,7 +36,7 @@ public class Game_Client : Game_ClientAction
                 RecvNewGameStart();
                 break;
             case Protocols.RoomReady:
-                RecvGameReady(data);
+                RecvGameReady();
                 break;//*/
             case Protocols.PlayerBetting:
                 RecvBettingUser(data);
@@ -121,7 +121,7 @@ public class Game_Client : Game_ClientAction
         OnNewGameStart();
     }
 
-    public void RecvGameReady(byte[] data)
+    public void RecvGameReady()
     {
         //m_Client.Send_int(Protocols.RoomReady, 0);
         TexasHoldemClient.Instance.Send_int(Protocols.RoomReady, 0);

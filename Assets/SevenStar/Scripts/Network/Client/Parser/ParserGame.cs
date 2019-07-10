@@ -45,7 +45,7 @@ public class ParserGame : ParserBase
         return obj;
     }
 
-    object RecvPlayerList(byte[] data)
+    object     RecvPlayerList(byte[] data)
     {
         List<int> recv = new List<int>();
         ByteDataParser p = new ByteDataParser();
@@ -93,13 +93,6 @@ public class ParserGame : ParserBase
         return d;
     }
     
-    static public bool GetPlayerList(RecvPacketObject obj, ref List<int> data)
-    {
-        if (obj.protocol != Protocols.RoomPlayerList)
-            return false;
-        data = (List<int>)obj.obj;
-        return true;
-    }
     /*
     static public bool GetRoomInPlayer(RecvPacketObject obj, ref int UserIdx)
     {

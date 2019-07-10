@@ -38,10 +38,6 @@ public partial class TexasHoldemClient
         Send(Protocols.RoomCreate, d.GetBytes());
     }
 
-    public void SendGetRoomCount(int BlindType)
-    {
-        Send_int(Protocols.RoomCount, BlindType);
-    }
     /*public void SendGetRoomInfo(bool IsIndex, int n)
     {
         ByteDataMaker d = new ByteDataMaker();

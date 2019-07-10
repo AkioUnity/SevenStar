@@ -345,7 +345,7 @@ public class LobbyLogic : UtilHalfSingleton<LobbyLogic>
         m_RefeshWorking = true;
         RecvPacketObject obj = null;
         int blindType = GetBlindType_ViewToggle(); // get blindtype from toggle btn
-        m_Client.SendGetRoomCount(blindType);
+        m_Client.Send_int(Protocols.RoomCount, blindType);
 
         while (obj == null)
         {

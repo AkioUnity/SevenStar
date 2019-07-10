@@ -18,12 +18,14 @@ public class Ws : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-//        ws=new WebSocket(new Uri("ws://124.158.124.3:13300"));  //new
-        ws=new WebSocket(new Uri("ws://localhost:13300"));
+        ws=new WebSocket(new Uri("ws://124.158.124.3:13300"));  //new
+//        ws=new WebSocket(new Uri("ws://localhost:13300"));
+//        ws=new WebSocket(new Uri("ws://192.168.1.54:13300"));
         sendQueue=new Queue<byte[]>();
         queueCn = 0;
     }
 
+    
     private void Start()
     {
         StartCoroutine(StartConnect());
@@ -46,9 +48,11 @@ public class Ws : MonoBehaviour
                 Debug.LogError("Error: " + ws.error);
                 break;
             }
+            if (sendQueue.Count>0)
+                ws.Send(sendQueue.Dequeue());
             yield return 0;
         }
-        Debug.Log("close");
+        Debug.LogError("close");
         ws.Close();
     }
 
@@ -74,7 +78,7 @@ public class Ws : MonoBehaviour
             Array.Copy(BitConverter.GetBytes(p), 0, SendData, 8, 4);
 
             Array.Copy(data, 0, SendData, 12, data.Length);
-            Debug.LogWarning("send cn:" + queueCn + "  protocal:" + protocol + " " + p+" len:"+len);
+            Debug.LogWarning("send cn:" + queueCn + " p:" + protocol + " " + p+" len:"+data.Length);
             if (queueCn > 10)
             {
                 Debug.LogError("error cn:"+queueCn);
@@ -82,6 +86,8 @@ public class Ws : MonoBehaviour
                 sendQueue.Clear();
             }
 //            ws.Send(SendData);
+            sendQueue.Enqueue(SendData);
+            return true;
             if (queueCn < 1)
             {
                 ws.Send(SendData);
@@ -118,15 +124,15 @@ public class Ws : MonoBehaviour
             Debug.LogError("protocal:" + (Protocols)protocol + " int:" + protocol);
 //            return ;
         }
-
-        Debug.Log("Received:"+queueCn+"  len:"+len+" int:"+protocol+" proto:"+(Protocols)protocol);
-        
         byte[] data = new byte[length];
         Array.Copy(res, 12, data, 0, length);
+        Debug.Log("Received:"+queueCn+" p:"+(Protocols)protocol+" "+protocol+" len:"+length);
+        
+        
         TexasHoldemClient c = TexasHoldemClient.Instance;
         c.AddRecvData(protocol,data);
-        if (queueCn>0)
-            ws.Send(sendQueue.Dequeue());
+//        if (queueCn>0)
+//            ws.Send(sendQueue.Dequeue());
 //        reply = res;
     }
 }

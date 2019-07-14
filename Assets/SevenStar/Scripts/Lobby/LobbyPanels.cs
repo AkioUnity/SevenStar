@@ -18,9 +18,6 @@ public enum LobbyPanelType
 
 public class LobbyPanels : UtilHalfSingleton<LobbyPanels>
 {
-    public Image m_HeaderImage;
-    public Sprite m_CreatroomHeaderSprite;
-    public Sprite m_DefaultHeaderSprite;
     public LobbyBottomBtnAction m_BottomBtn;
     public GameObject[] m_LobbyPanels;
 

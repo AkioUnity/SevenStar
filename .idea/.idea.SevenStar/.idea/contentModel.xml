@@ -104,6 +104,14 @@
             <e p="CardObject.cs" t="Include" />
             <e p="CommunityCard.cs" t="Include" />
             <e p="GamePlayerInfo.cs" t="Include" />
+            <e p="Gradient" t="Include">
+              <e p="SetDirty.cs" t="Include" />
+              <e p="UICornersGradient.cs" t="Include" />
+              <e p="UIGradient.cs" t="Include" />
+              <e p="UIGradientUtils.cs" t="Include" />
+              <e p="UITextCornersGradient.cs" t="Include" />
+              <e p="UITextGradient.cs" t="Include" />
+            </e>
             <e p="KeyBoard" t="Include">
               <e p="keyboardClass.cs" t="Include" />
             </e>

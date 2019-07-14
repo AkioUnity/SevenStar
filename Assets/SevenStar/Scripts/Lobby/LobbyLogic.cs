@@ -155,7 +155,6 @@ public class LobbyLogic : UtilHalfSingleton<LobbyLogic>
     }
 
     ///////////////////////////////////////////////////  Room Method /////////////////////////////////////////////
-
     public void OnClick_BlindDropbox()
     {
         if (m_BlindDropboxDropped == null)
